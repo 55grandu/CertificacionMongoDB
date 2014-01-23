@@ -17,14 +17,11 @@
 
 package course;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
+import com.mongodb.*;
 import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class BlogPostDAO {
@@ -40,7 +37,7 @@ public class BlogPostDAO {
         DBObject post = null;
         // XXX HW 3.2,  Work Here
 
-
+        post = postsCollection.findOne(new BasicDBObject("permalink",permalink));
 
         return post;
     }
@@ -52,6 +49,8 @@ public class BlogPostDAO {
         List<DBObject> posts = null;
         // XXX HW 3.2,  Work Here
         // Return a list of DBObjects, each one a post from the posts collection
+
+        posts = postsCollection.find().sort(new BasicDBObject("date",-1)).limit(limit).toArray();
 
         return posts;
     }
@@ -79,6 +78,17 @@ public class BlogPostDAO {
 
         // Build the post object and insert it
 
+        List<DBObject> comments = new ArrayList<DBObject>();
+
+        post.append("title",title)
+                .append("author", username)
+                .append("body", body)
+                .append("permalink",permalink)
+                .append("comments",comments)
+                .append("tags", tags)
+                .append("date",new Date());
+
+        postsCollection.insert(post);
 
         return permalink;
     }

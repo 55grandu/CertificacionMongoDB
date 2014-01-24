@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -115,7 +115,14 @@ public class BlogPostDAO {
         // - best solution uses an update command to the database and a suitable
         //   operator to append the comment on to any existing list of comments
 
+        BasicDBList listComments = new BasicDBList();
 
+        BasicDBObject comment = new BasicDBObject();
+        comment.append("author", name).append("body", body).append("email", email);
+
+        listComments.add(comment);
+
+        postsCollection.update(new BasicDBObject("permalink",permalink),new BasicDBObject("$push", new BasicDBObject("comments", comment)));
 
     }
 
